@@ -1,11 +1,12 @@
 package com.cursojavanauta.create_user.business.service;
 
+import com.cursojavanauta.create_user.infrastructure.dto.CreateUserForm;
 import com.cursojavanauta.create_user.infrastructure.dto.UserAccountDTO;
 import com.cursojavanauta.create_user.infrastructure.entity.UserAccount;
-import com.cursojavanauta.create_user.infrastructure.exception.SelfConflictException;
+import com.cursojavanauta.create_user.infrastructure.exception.SelfEntityConflictException;
+import com.cursojavanauta.create_user.infrastructure.exception.SelfEntityNotFound;
 import com.cursojavanauta.create_user.infrastructure.mapper.UserAccountMapper;
 import com.cursojavanauta.create_user.infrastructure.repository.UserAccountRepository;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,26 +21,26 @@ public class UserAccountService {
     private final UserAccountMapper userAccountMapper;
 
     @Transactional
-    public UserAccountDTO create(UserAccountDTO dto){
+    public UserAccountDTO create(CreateUserForm form){
         try{
-            UserAccount user = userAccountMapper.toEntityFromDTO(dto);
+            UserAccount user = userAccountMapper.toEntityFromForm(form);
             handleExistsEmail(user.getEmail());
             String encryptedPassword = passwordEncoder.encode(user.getPassword());
             user.setPassword(encryptedPassword);
             user = userAccountRepository.save(user);
             return userAccountMapper.toDTOFromEntity(user);
-        }catch (SelfConflictException e){
-            throw new SelfConflictException(e.getMessage());
+        }catch (SelfEntityConflictException e){
+            throw new SelfEntityConflictException(e.getMessage());
         }
     }
 
     private void handleExistsEmail(String email){
         try{
             if(existsByEmail(email)){
-                throw new SelfConflictException("Email já cadastrado para outro usuário.");
+                throw new SelfEntityConflictException("Email já cadastrado para outro usuário.");
             }
-        } catch (SelfConflictException e) {
-            throw new SelfConflictException("Email já cadastrado.", e.getCause());
+        } catch (SelfEntityConflictException e) {
+            throw new SelfEntityConflictException("Email já cadastrado.", e.getCause());
         }
     }
 
@@ -48,11 +49,11 @@ public class UserAccountService {
     }
 
     public UserAccount findByEmail(String email){
-        return userAccountRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("Email não existe."));
+        return userAccountRepository.findByEmail(email).orElseThrow(() -> new SelfEntityNotFound("Email não existe."));
     }
 
     public UserAccount findById(Long id){
-        return userAccountRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado."));
+        return userAccountRepository.findById(id).orElseThrow(() -> new SelfEntityNotFound("Usuário não encontrado."));
     }
 
     @Transactional
@@ -64,7 +65,7 @@ public class UserAccountService {
     @Transactional
     public void deleteById(Long id){
         UserAccount userAccount = userAccountRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado."));
+                .orElseThrow(() -> new SelfEntityNotFound("Usuário não encontrado."));
 
         userAccountRepository.delete(userAccount);
     }

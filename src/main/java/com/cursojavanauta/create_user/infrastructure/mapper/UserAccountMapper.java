@@ -1,5 +1,6 @@
 package com.cursojavanauta.create_user.infrastructure.mapper;
 
+import com.cursojavanauta.create_user.infrastructure.dto.CreateUserForm;
 import com.cursojavanauta.create_user.infrastructure.dto.UserAccountDTO;
 import com.cursojavanauta.create_user.infrastructure.entity.UserAccount;
 import org.mapstruct.Mapper;
@@ -13,4 +14,7 @@ public interface UserAccountMapper {
     UserAccount toEntityFromDTO(UserAccountDTO dto);
 
     UserAccountDTO toDTOFromEntity(UserAccount entity);
+
+    @Mapping(target = "id", ignore = true)
+    UserAccount toEntityFromForm(CreateUserForm form);
 }

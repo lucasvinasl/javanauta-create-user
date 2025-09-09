@@ -1,6 +1,5 @@
 package com.cursojavanauta.create_user.infrastructure.exception;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -13,19 +12,27 @@ import java.util.Map;
 public class ControllerAdvices {
 
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(SelfConflictException.class)
+    @ExceptionHandler(SelfEntityConflictException.class)
     public Map<String, String> handleValidationExceptions(
-            SelfConflictException ex) {
+            SelfEntityConflictException ex) {
         Map<String, String> errors = new HashMap<>();
         errors.put("message", ex.getMessage());
         return errors;
     }
 
     @ResponseStatus(code = HttpStatus.NOT_FOUND)
-    @ExceptionHandler(EntityNotFoundException.class)
-    public Map<String, String> handleEntityNotFoundException(EntityNotFoundException ex){
+    @ExceptionHandler(SelfEntityNotFound.class)
+    public Map<String, String> handleEntityNotFoundException(SelfEntityNotFound ex){
         Map<String, String> errors = new HashMap<>();
         errors.put("message", ex.getMessage());
+        return errors;
+    }
+
+    @ResponseStatus(code = HttpStatus.FORBIDDEN)
+    @ExceptionHandler(SelfLoginAuthException.class)
+    public Map<String, String> handleLoginAuthException(SelfLoginAuthException ex){
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message","Usuário ou senha inválida.");
         return errors;
     }
 
