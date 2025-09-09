@@ -1,7 +1,9 @@
 package com.cursojavanauta.create_user.business.service;
 
+import com.cursojavanauta.create_user.infrastructure.dto.UserAccountDTO;
 import com.cursojavanauta.create_user.infrastructure.entity.UserAccount;
 import com.cursojavanauta.create_user.infrastructure.exception.SelfConflictException;
+import com.cursojavanauta.create_user.infrastructure.mapper.UserAccountMapper;
 import com.cursojavanauta.create_user.infrastructure.repository.UserAccountRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -15,14 +17,17 @@ public class UserAccountService {
 
     private final UserAccountRepository userAccountRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserAccountMapper userAccountMapper;
 
     @Transactional
-    public UserAccount create(UserAccount userAccount){
+    public UserAccountDTO create(UserAccountDTO dto){
         try{
-            handleExistsEmail(userAccount.getEmail());
-            String encryptedPassword = passwordEncoder.encode(userAccount.getPassword());
-            userAccount.setPassword(encryptedPassword);
-            return userAccountRepository.save(userAccount);
+            UserAccount user = userAccountMapper.toEntityFromDTO(dto);
+            handleExistsEmail(user.getEmail());
+            String encryptedPassword = passwordEncoder.encode(user.getPassword());
+            user.setPassword(encryptedPassword);
+            user = userAccountRepository.save(user);
+            return userAccountMapper.toDTOFromEntity(user);
         }catch (SelfConflictException e){
             throw new SelfConflictException(e.getMessage());
         }

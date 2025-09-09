@@ -1,6 +1,7 @@
 package com.cursojavanauta.create_user.business.controller;
 
 import com.cursojavanauta.create_user.business.service.UserAccountService;
+import com.cursojavanauta.create_user.infrastructure.dto.UserAccountDTO;
 import com.cursojavanauta.create_user.infrastructure.dto.UserAccountLoginDTO;
 import com.cursojavanauta.create_user.infrastructure.entity.UserAccount;
 import com.cursojavanauta.create_user.infrastructure.security.JwtUtil;
@@ -21,7 +22,7 @@ public class UserAccountController {
     private final JwtUtil jwtUtil;
 
     @PostMapping
-    public ResponseEntity<UserAccount> create(@RequestBody UserAccount userAccount){
+    public ResponseEntity<UserAccountDTO> create(@RequestBody UserAccountDTO userAccount){
         return ResponseEntity.ok(userAccountService.create(userAccount));
     }
 
