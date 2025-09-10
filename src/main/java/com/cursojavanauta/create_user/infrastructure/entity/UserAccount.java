@@ -33,11 +33,11 @@ public class UserAccount implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL,  fetch = FetchType.EAGER)
     @JoinColumn(name = "user_account_id", referencedColumnName = "id")
     private List<Address> addresses = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_account_id", referencedColumnName = "id")
     private List<Phone> phones = new ArrayList<>();
 

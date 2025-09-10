@@ -9,6 +9,7 @@ public class PhoneConverter {
 
     public Phone toEntityFromDTO(PhoneDTO dto) {
         return Phone.builder()
+                .id(dto.getId())
                 .phoneCode(dto.getPhoneCode())
                 .phoneNumber(dto.getPhoneNumber())
                 .build();
@@ -16,6 +17,7 @@ public class PhoneConverter {
 
     public PhoneDTO toDTOFromEntity(Phone phone) {
         return PhoneDTO.builder()
+                .id(phone.getId())
                 .phoneCode(phone.getPhoneCode())
                 .phoneNumber(phone.getPhoneNumber())
                 .build();

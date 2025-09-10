@@ -2,10 +2,7 @@ package com.cursojavanauta.create_user.business.controller;
 
 import com.cursojavanauta.create_user.business.service.AuthenticationService;
 import com.cursojavanauta.create_user.business.service.UserAccountService;
-import com.cursojavanauta.create_user.infrastructure.dto.CreateUserForm;
-import com.cursojavanauta.create_user.infrastructure.dto.TokenDTO;
-import com.cursojavanauta.create_user.infrastructure.dto.UserAccountDTO;
-import com.cursojavanauta.create_user.infrastructure.dto.UserAccountLoginForm;
+import com.cursojavanauta.create_user.infrastructure.dto.*;
 import com.cursojavanauta.create_user.infrastructure.entity.UserAccount;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +48,11 @@ public class UserAccountController {
     public ResponseEntity<Void> deleteById(@RequestParam Long id){
         userAccountService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping
+    public ResponseEntity<UserAccountDTO> update(@RequestBody UpdateUserForm form){
+        return ResponseEntity.ok().body(userAccountService.update(form));
     }
 
 }

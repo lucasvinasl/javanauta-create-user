@@ -7,6 +7,8 @@ import lombok.Data;
 @Builder
 public class PhoneDTO {
 
+    private Long id;
+
     private String phoneNumber;
 
     private String phoneCode;
